@@ -1,0 +1,188 @@
+-- phpMyAdmin SQL Dump
+-- version 4.7.4
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Oct 21, 2017 at 11:09 PM
+-- Server version: 10.1.26-MariaDB
+-- PHP Version: 7.1.9
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `discountfinderdb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `discounts`
+--
+
+CREATE TABLE `discounts` (
+  `id` int(11) NOT NULL,
+  `shopId` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL,
+  `originalPrice` float NOT NULL,
+  `currentPrice` float NOT NULL,
+  `title` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `requesteddiscounts`
+--
+
+CREATE TABLE `requesteddiscounts` (
+  `id` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `category` varchar(255) NOT NULL,
+  `price` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shops`
+--
+
+CREATE TABLE `shops` (
+  `id` int(11) NOT NULL,
+  `ownerId` int(11) NOT NULL,
+  `brandName` varchar(100) NOT NULL,
+  `logPos` double NOT NULL,
+  `latPos` double NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `shops`
+--
+
+INSERT INTO `shops` (`id`, `ownerId`, `brandName`, `logPos`, `latPos`) VALUES
+(1, 1, 'MammasPizza', 41.0822197, 23.5432316),
+(2, 1, 'TEI CAFE', 41.074596, 23.553897);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `firstName` varchar(50) NOT NULL,
+  `lastName` varchar(50) NOT NULL,
+  `eMail` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `passwordSalt` varchar(255) NOT NULL,
+  `role` enum('customer','seller','admin','webmaster') NOT NULL DEFAULT 'customer',
+  `token` varchar(255) NOT NULL,
+  `loginTries` int(11) NOT NULL,
+  `status` enum('enabled','disabled','locked') NOT NULL DEFAULT 'enabled',
+  `unlockDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `lastLoginDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `creationDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `firstName`, `lastName`, `eMail`, `password`, `passwordSalt`, `role`, `token`, `loginTries`, `status`, `unlockDate`, `lastLoginDate`, `creationDate`) VALUES
+(1, 'Jordan', 'Kostelidis', 'iordkost@teicm.gr', 'password', 'passwordSalt', 'seller', 'token', 0, 'enabled', '2017-10-21 20:34:35', '2017-10-21 20:34:35', '2017-10-21 20:34:35');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `discounts`
+--
+ALTER TABLE `discounts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `shopId` (`shopId`);
+
+--
+-- Indexes for table `requesteddiscounts`
+--
+ALTER TABLE `requesteddiscounts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `userId` (`userId`);
+
+--
+-- Indexes for table `shops`
+--
+ALTER TABLE `shops`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ownerId` (`ownerId`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `discounts`
+--
+ALTER TABLE `discounts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `requesteddiscounts`
+--
+ALTER TABLE `requesteddiscounts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `shops`
+--
+ALTER TABLE `shops`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `discounts`
+--
+ALTER TABLE `discounts`
+  ADD CONSTRAINT `discounts_ibfk_1` FOREIGN KEY (`shopId`) REFERENCES `shops` (`id`);
+
+--
+-- Constraints for table `requesteddiscounts`
+--
+ALTER TABLE `requesteddiscounts`
+  ADD CONSTRAINT `requesteddiscounts_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `shops`
+--
+ALTER TABLE `shops`
+  ADD CONSTRAINT `shops_ibfk_1` FOREIGN KEY (`ownerId`) REFERENCES `users` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
