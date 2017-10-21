@@ -1,2 +1,2 @@
 # discountFinderBackend
-The Backend service of discountFinder solution
+The Backend service of discountFinder solution.
