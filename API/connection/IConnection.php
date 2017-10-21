@@ -48,4 +48,5 @@ interface DatabaseInterface
     public function jsonEncode($object);
 
     public function jsonDecode($string);
+
 }
