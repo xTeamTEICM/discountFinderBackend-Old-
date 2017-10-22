@@ -12,6 +12,6 @@ define("DB_PORT", "3306");
 define("DB_CODE", "UTF8");
 
 // Include Core Files
-require_once ("./connection/IConnection.php");
-require_once ("./connection/MySQL.php");
-require_once ("./connection/PostgreSQL.php");
+require_once ("../connection/IConnection.php");
+require_once ("../connection/MySQL.php");
+require_once ("../connection/PostgreSQL.php");
