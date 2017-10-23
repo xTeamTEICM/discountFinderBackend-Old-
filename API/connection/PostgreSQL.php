@@ -1,11 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: paulkokos
- * Date: 17/10/2017
- * Time: 4:58 πμ
- */
-class PostgreSQL implements DatabaseInterface
+
+class PostgreSQL implements IConnection
 {
     protected $db;
     protected $queries;

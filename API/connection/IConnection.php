@@ -5,11 +5,11 @@
  * Date: 17/10/2017
  * Time: 4:56 πμ
  */
-interface DatabaseInterface
+interface IConnection
 {
     public function getSql($name);
 
-    public function connect($hostname, $username, $password, $database, $port, $socket, $charset);
+    public function connect($hostname, $username, $password, $database, $port, $socket,$charset);
 
     public function query($sql, $params = array());
 
@@ -48,5 +48,9 @@ interface DatabaseInterface
     public function jsonEncode($object);
 
     public function jsonDecode($string);
+
+    public function insertQuery($username,$password);
+
+    public function connect_simple();
 
 }

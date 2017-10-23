@@ -1,86 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: paulkokos
- * Date: 17/10/2017
- * Time: 5:04 πμ
- */
+include_once 'IConnection.php';
 
-class MySQL implements DatabaseInterface
+class MySQL implements IConnection
 {
     protected $db;
     protected $queries;
 
     public function __construct()
     {
-        $this->queries = array(
-            'list_tables' => 'SELECT
-					"TABLE_NAME","TABLE_COMMENT"
-				FROM
-					"INFORMATION_SCHEMA"."TABLES"
-				WHERE
-					"TABLE_SCHEMA" = ?',
-            'reflect_table' => 'SELECT
-					"TABLE_NAME"
-				FROM
-					"INFORMATION_SCHEMA"."TABLES"
-				WHERE
-					"TABLE_NAME" COLLATE \'utf8_bin\' = ? AND
-					"TABLE_SCHEMA" = ?',
-            'reflect_pk' => 'SELECT
-					"COLUMN_NAME"
-				FROM
-					"INFORMATION_SCHEMA"."COLUMNS"
-				WHERE
-					"COLUMN_KEY" = \'PRI\' AND
-					"TABLE_NAME" = ? AND
-					"TABLE_SCHEMA" = ?',
-            'reflect_belongs_to' => 'SELECT
-					"TABLE_NAME","COLUMN_NAME",
-					"REFERENCED_TABLE_NAME","REFERENCED_COLUMN_NAME"
-				FROM
-					"INFORMATION_SCHEMA"."KEY_COLUMN_USAGE"
-				WHERE
-					"TABLE_NAME" COLLATE \'utf8_bin\' = ? AND
-					"REFERENCED_TABLE_NAME" COLLATE \'utf8_bin\' IN ? AND
-					"TABLE_SCHEMA" = ? AND
-					"REFERENCED_TABLE_SCHEMA" = ?',
-            'reflect_has_many' => 'SELECT
-					"TABLE_NAME","COLUMN_NAME",
-					"REFERENCED_TABLE_NAME","REFERENCED_COLUMN_NAME"
-				FROM
-					"INFORMATION_SCHEMA"."KEY_COLUMN_USAGE"
-				WHERE
-					"TABLE_NAME" COLLATE \'utf8_bin\' IN ? AND
-					"REFERENCED_TABLE_NAME" COLLATE \'utf8_bin\' = ? AND
-					"TABLE_SCHEMA" = ? AND
-					"REFERENCED_TABLE_SCHEMA" = ?',
-            'reflect_habtm' => 'SELECT
-					k1."TABLE_NAME", k1."COLUMN_NAME",
-					k1."REFERENCED_TABLE_NAME", k1."REFERENCED_COLUMN_NAME",
-					k2."TABLE_NAME", k2."COLUMN_NAME",
-					k2."REFERENCED_TABLE_NAME", k2."REFERENCED_COLUMN_NAME"
-				FROM
-					"INFORMATION_SCHEMA"."KEY_COLUMN_USAGE" k1,
-					"INFORMATION_SCHEMA"."KEY_COLUMN_USAGE" k2
-				WHERE
-					k1."TABLE_SCHEMA" = ? AND
-					k2."TABLE_SCHEMA" = ? AND
-					k1."REFERENCED_TABLE_SCHEMA" = ? AND
-					k2."REFERENCED_TABLE_SCHEMA" = ? AND
-					k1."TABLE_NAME" COLLATE \'utf8_bin\' = k2."TABLE_NAME" COLLATE \'utf8_bin\' AND
-					k1."REFERENCED_TABLE_NAME" COLLATE \'utf8_bin\' = ? AND
-					k2."REFERENCED_TABLE_NAME" COLLATE \'utf8_bin\' IN ?',
-            'reflect_columns' => 'SELECT
-					"COLUMN_NAME", "COLUMN_DEFAULT", "IS_NULLABLE", "DATA_TYPE", "CHARACTER_MAXIMUM_LENGTH"
-				FROM 
-					"INFORMATION_SCHEMA"."COLUMNS" 
-				WHERE 
-					"TABLE_NAME" = ? AND
-					"TABLE_SCHEMA" = ?
-				ORDER BY
-					"ORDINAL_POSITION"'
-        );
+
     }
 
     public function getSql($name)
@@ -88,13 +16,13 @@ class MySQL implements DatabaseInterface
         return isset($this->queries[$name]) ? $this->queries[$name] : false;
     }
 
-    public function connect($hostname, $username, $password, $database, $port, $socket, $charset)
+    public function connect($hostname, $username, $password, $database, $port,$socket,$charset)
     {
         $db = mysqli_init();
         if (defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
             mysqli_options($db, MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
         }
-        $success = mysqli_real_connect($db, $hostname, $username, $password, $database, $port, $socket, MYSQLI_CLIENT_FOUND_ROWS);
+        $success = mysqli_connect($hostname, $username, $password, $database, $port);
         if (!$success) {
             throw new \Exception('Connect failed. ' . mysqli_connect_error());
         }
@@ -104,6 +32,11 @@ class MySQL implements DatabaseInterface
         if (!mysqli_query($db, 'SET SESSION sql_mode = \'ANSI_QUOTES\';')) {
             throw new \Exception('Error setting ANSI quotes. ' . mysqli_error($db));
         }
+        $this->db = $db;
+    }
+    public function connect_simple($hostname,$username,$password) {
+        $db = mysqli_init();
+
         $this->db = $db;
     }
 
@@ -238,5 +171,10 @@ class MySQL implements DatabaseInterface
     public function jsonDecode($string)
     {
         return json_decode($string);
+    }
+
+    public function insertQuery($username,$password)
+    {
+        $this->query($this->db,"insert into USER (email,password)VALUES '$username','$password';");
     }
 }
