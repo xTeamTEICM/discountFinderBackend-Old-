@@ -1,5 +1,7 @@
 <?php
 include_once 'IConnection.php';
+include_once 'errorHandler.php';
+
 
 class MySQL implements IConnection
 {

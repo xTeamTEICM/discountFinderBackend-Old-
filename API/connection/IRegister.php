@@ -8,6 +8,6 @@
 
 interface IRegister
 {
-
+    public function returnJSON($object);
 
 }

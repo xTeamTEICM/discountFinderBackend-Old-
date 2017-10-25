@@ -1,4 +1,6 @@
 <?php
+include_once 'errorHandler.php';
+
 /**
  * Created by PhpStorm.
  * User: paulkokos
@@ -99,8 +101,20 @@ class Register implements IRegister
      * @return string
      */
 
-    public function returnJSON($object) {
-        return json_encode($object);
-    }
+//    public function setJSON($object) {
+//        return json_encode($object);
+//    }
 
+    /**
+     * @param $JSON
+     */
+//    public function setJSON($JSON) {
+//        $object = array();
+//        $object = var_dump(json_decode($JSON,true));
+//        return $object;
+//    }
+    public function returnJSON($object)
+    {
+        // TODO: Implement returnJSON() method.
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+include_once 'errorHandler.php';
 
 class PostgreSQL implements IConnection
 {

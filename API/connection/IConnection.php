@@ -51,6 +51,6 @@ interface IConnection
 
     public function insertQuery($username,$password);
 
-    public function connect_simple();
+    public function connect_simple($hostname,$username,$password);
 
 }
