@@ -7,7 +7,7 @@
  */
 
 require_once (__DIR__ . "/../JSONEnabler/JSONEnabler.php");
-require_once (__DIR__ . "Categories.php");
+require_once (__DIR__ . "/Categories.php");
 
 $jsonController = new JSONEnabler();
 
